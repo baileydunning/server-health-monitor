@@ -1,6 +1,3 @@
-// App.js
-
-import React from "react";
 import QueryCampsites from "./components/QueryCampsites";
 import ServerHealth from "./components/ServerHealth";
 import ConsoleTerminal from "./components/ConsoleTerminal";

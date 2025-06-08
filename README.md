@@ -102,7 +102,7 @@ Clone both the server and ui in separate terminal tabs, install dependencies and
 
 ```bash
 git clone https://github.com/baileydunning/campsite-streaming-server.git
-cd server-health-monitor
+cd campsite-streaming-server
 npm install
 npm start
 ```
