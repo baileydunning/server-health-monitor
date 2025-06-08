@@ -42,9 +42,8 @@ const ServerHealth = () => {
     const svg = d3.select("#cpuChart").attr("width", 500).attr("height", 100);
     const scale = d3.scaleLinear().domain([0, 100]).range([0, 400]);
 
-    svg.selectAll("*").remove(); // Clear previous chart
+    svg.selectAll("*").remove(); 
 
-    // Background bar (neutral gray)
     svg
       .append("rect")
       .attr("x", 50)
