@@ -1,70 +1,112 @@
-# Getting Started with Create React App
+# Campsites Streaming Server Health Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based dashboard for monitoring the health and activity of my [campsite streaming server](https://github.com/baileydunning/campsite-streaming-server) project. It visualizes real-time server metrics, lets you query campsites by elevation, and streams server logs live via WebSocket.
 
-## Available Scripts
+![Dashboard UI](./public/ui.png)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Server Health Visualization**
+  - Live D3-powered chart showing CPU usage  
+  - Heap memory and RSS (resident set size) display  
+  - Uptime and error status
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Campsite Query**
+  - Enter minimum/maximum elevation to fetch and display a filtered list of campsites
 
-### `npm test`
+- **Live Console Terminal**
+  - Real-time streaming of server logs in a scrollable terminal component over WebSocket
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## How It Works
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Server Health (`ServerHealth.js`)
+- **Fetches** server metrics every 5 seconds from  
+  `http://localhost:3000/status`
+- **Renders:**
+  - **CPU Usage**: horizontal bar chart (D3)  
+  - **Heap Memory**: used vs. total with percentage  
+  - **RSS Memory**: total process memory footprint  
+  - **Uptime**: seconds since server start
+- **Handles Errors:** shows a banner if metrics can’t be retrieved
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Campsite Query (`QueryCampsites.js`)
+- **Form Inputs:** `minElevation` and `maxElevation`
+- **Fetches** data from  
+  ```
+  http://localhost:3000/campsites?min_elevation=5000&max_elevation=7000
+  ```
+- **Displays:** a list of matching campsites with name and elevation
+- **Handles Errors:** displays validation or network errors
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 3. Console Terminal (`ConsoleTerminal.js`)
+- **Connects** to `ws://localhost:3000` via WebSocket
+- **Streams** incoming log messages live
+- **Renders** logs in a fixed-height, scrollable window
+- **Handles Errors:** notifies on connection failures or disconnects
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
+- **Node.js** v18 or newer
+- **Streaming Server** running at:
+  - HTTP API: `http://localhost:3000`
+  - WebSocket: `ws://localhost:3000`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Installation & Launch
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Clone both the server and ui in separate terminal tabs, install dependencies and start
 
-## Learn More
+```bash
+git clone https://github.com/baileydunning/campsite-streaming-server.git
+cd server-health-monitor
+npm install
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+git clone https://github.com/baileydunning/server-health-monitor.git
+cd server-health-monitor
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The streaming server runs on [http://localhost:3000](http://localhost:3000) 
 
-### Code Splitting
+The React dev server runs on [http://localhost:3001](http://localhost:3001)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+By default, the app points to `localhost:3000`. To change endpoints, update the URLs in:
 
-### Making a Progressive Web App
+- `components/ServerHealth.js`
+- `components/QueryCampsites.js`
+- `components/ConsoleTerminal.js`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Customization
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- **Styling:** Tweak `App.css` or create new component styles  
+- **Charts:** Modify D3 setup in `ServerHealth.js`  
+- **Error Handling:** Enhance UI in each component
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Troubleshooting
 
-### `npm run build` fails to minify
+- **API Unreachable:**  
+  Verify your backend server is up and CORS is configured correctly.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **WebSocket Errors:**  
+  Ensure `ws://localhost:3000` is accessible and not blocked by a firewall.
+
+- **Port Conflicts:**  
+  Change the React port by setting the `PORT` environment variable in `package.json` or your start script.
