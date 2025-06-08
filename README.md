@@ -23,7 +23,7 @@ A React-based dashboard for monitoring the health and activity of my [campsite s
 
 ## How It Works
 
-### 1. Server Health (`ServerHealth.js`)
+### Server Health (`ServerHealth.js`)
 - **Fetches** server metrics every 5 seconds from  
   `http://localhost:3000/status`
 - **Renders:**
@@ -48,6 +48,44 @@ A React-based dashboard for monitoring the health and activity of my [campsite s
 - **Renders** logs in a fixed-height, scrollable window
 - **Handles Errors:** notifies on connection failures or disconnects
 
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+  subgraph UI ["Server Health Monitor UI"]
+    direction TB
+    A["App.js
+Layout & Routing"] --> B["ServerHealth Component"]
+    A --> C["QueryCampsites Component"]
+    A --> D["ConsoleTerminal Component"]
+  end
+
+  subgraph Backend ["Campsite Streaming Server"]
+    direction TB
+    E["/status API
+(GET /status)"]
+    F["/campsites API
+(GET /campsites?min_elevation&max_elevation)"]
+    G["WebSocket Server
+(ws://localhost:3000)"]
+  end
+
+  B -- "Fetch metrics every 5s" --> E
+  E -. "JSON metrics" .-> B
+
+  C -- "Query with elevation params" --> F
+  F -. "JSON campsite list" .-> C
+
+  D -- "Subscribe to log stream" --> G
+  G -. "Log messages" .-> D
+
+  classDef uiFill fill:#e3f2fd,stroke:#1e88e5,stroke-width:2px;
+  classDef backendFill fill:#fff3e0,stroke:#fb8c00,stroke-width:2px;
+  class UI uiFill;
+  class Backend backendFill;
+```
 ---
 
 ## Getting Started
@@ -76,8 +114,6 @@ npm install
 npm start
 ```
 
-The streaming server runs on [http://localhost:3000](http://localhost:3000) 
-
 The React dev server runs on [http://localhost:3001](http://localhost:3001)
 
 ---
@@ -89,14 +125,6 @@ By default, the app points to `localhost:3000`. To change endpoints, update the 
 - `components/ServerHealth.js`
 - `components/QueryCampsites.js`
 - `components/ConsoleTerminal.js`
-
----
-
-## Customization
-
-- **Styling:** Tweak `App.css` or create new component styles  
-- **Charts:** Modify D3 setup in `ServerHealth.js`  
-- **Error Handling:** Enhance UI in each component
 
 ---
 
