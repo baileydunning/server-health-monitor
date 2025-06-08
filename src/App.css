@@ -128,3 +128,38 @@
   text-align: left !important;
   white-space: pre-wrap;
 }
+
+.query-campsites-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.query-campsites-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.query-campsites-label {
+  margin-bottom: 4px;
+}
+
+.query-campsites-input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.query-campsites-button {
+  align-self: flex-end;
+  padding: 8px 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
