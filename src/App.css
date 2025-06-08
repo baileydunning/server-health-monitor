@@ -125,4 +125,6 @@
 
 .console-terminal-log {
   margin: 0;
+  text-align: left !important;
+  white-space: pre-wrap;
 }
